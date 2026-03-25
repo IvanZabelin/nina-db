@@ -11,13 +11,12 @@ This repository contains the database migration layer for the Nina project. It i
 - provide a clean place for Alembic configuration and revision history;
 - make database setup reproducible across environments.
 
-## Planned contents
+## Stack
 
-- Alembic configuration;
-- migration revisions;
-- schema bootstrap instructions;
-- environment configuration examples;
-- database-related documentation.
+- PostgreSQL 16
+- Alembic
+- SQLAlchemy 2.x
+- psycopg 3 for migrations
 
 ## Relationship to the main project
 
@@ -27,6 +26,51 @@ Main application repository:
 Database repository:
 - `nina-db` — schema management and migrations
 
+## Local development
+
+### 1. Start PostgreSQL with Docker Compose
+
+```bash
+docker compose up -d
+```
+
+Check status:
+
+```bash
+docker compose ps
+```
+
+### 2. Create local environment file
+
+```bash
+cp .env.example .env
+```
+
+Default value:
+
+```env
+DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/nina
+```
+
+### 3. Install dependencies
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 4. Run migrations
+
+```bash
+alembic upgrade head
+```
+
+## Notes
+
+- This repository currently uses a synchronous PostgreSQL driver for Alembic migrations.
+- The main `nina` service can still use an async engine separately (`asyncpg`) without any conflict.
+
 ## Status
 
-Initial repository setup.
+Initial schema is created and ready to be applied to a local PostgreSQL instance.
